@@ -94,7 +94,7 @@ class Overlay(tk.Toplevel):
         self.overrideredirect(True)
         self.minsize(*Overlay.MIN_SIZE)
         self.geometry(overlay_geometry)
-        self.attributes('-topmost', True)
+        self.attributes("-topmost", True)
         self.update()
 
         self.handle_color()

@@ -4,7 +4,7 @@ from PIL import Image, ImageDraw, ImageTk
 class ResizeGrip(tk.Label):
     @staticmethod
     def create_resize_grip_image(color, angle):
-        image = Image.new('RGBA', (14, 14))
+        image = Image.new("RGBA", (14, 14))
         draw = ImageDraw.Draw(image)
         coords = [
             (9, 3, 10, 4),
