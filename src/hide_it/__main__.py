@@ -14,7 +14,6 @@ def find_matching_color(color):
     return '#000000' if (r * 0.299 + g * 0.587 + b * 0.114) > 186 else '#FFFFFF'
 
 def change_background_color(widget, color, highlight_color):
-    print(type(widget), type(widget) is ResizeGrip, type(widget) is tk.Label, type(widget) is tk.Entry)
     if type(widget) is ResizeGrip:
         widget.config(background = color)
     if type(widget) is tk.Label:
@@ -28,7 +27,6 @@ def change_background_color(widget, color, highlight_color):
         )
 
 def change_foreground_color(widget, color):
-    print(type(widget))
     if type(widget) is ResizeGrip:
         widget.change_resize_grip_color(color)
     if type(widget) is tk.Label:
@@ -64,7 +62,7 @@ class ResizeGrip(tk.Label):
         image = image.rotate(angle)
         return ImageTk.PhotoImage(image)
 
-    def __init__(self, *args, resize_grip_color = "#ffffff", resize_grip_angle = 0, **kwargs):
+    def __init__(self, *args, resize_grip_color = "#000", resize_grip_angle = 0, **kwargs):
         tk.Label.__init__(self, *args, **kwargs)
         self.resize_grip_color = resize_grip_color
         self.resize_grip_angle = resize_grip_angle
@@ -90,7 +88,7 @@ class Overlay(tk.Toplevel):
     BOTTOM_RIGHT = 3
     MIN_SIZE = (80, 64)
 
-    def __init__(self, *args, overlay_color = "#ffffff", overlay_geometry = "0x0+0+0", overlay_close_handler = lambda event: None, **kwargs):
+    def __init__(self, *args, overlay_color = "#000", overlay_geometry = "0x0+0+0", overlay_close_handler = lambda event: None, **kwargs):
         tk.Toplevel.__init__(self, *args, **kwargs)
 
         self.overlay_color = overlay_color
@@ -100,17 +98,17 @@ class Overlay(tk.Toplevel):
         self.root_frame = tk.Frame(self)
 
         self.top_frame = tk.Frame(self.root_frame)
-        self.top_left_resize_grip = ResizeGrip(self.top_frame, resize_grip_color = self.overlay_color_string_var.get(), resize_grip_angle = 180)
+        self.top_left_resize_grip = ResizeGrip(self.top_frame, resize_grip_angle = 180)
         self.close = tk.Label(self.top_frame, text="x")
-        self.top_right_resize_grip = ResizeGrip(self.top_frame, resize_grip_color = self.overlay_color_string_var.get(), resize_grip_angle = 90)
+        self.top_right_resize_grip = ResizeGrip(self.top_frame, resize_grip_angle = 90)
 
         self.center_frame = tk.Frame(self.root_frame)
         self.position_grip = tk.Label(self.center_frame)
 
         self.bottom_frame = tk.Frame(self.root_frame)
-        self.bottom_left_resize_grip = ResizeGrip(self.bottom_frame, resize_grip_color = self.overlay_color_string_var.get(), resize_grip_angle = 270)
+        self.bottom_left_resize_grip = ResizeGrip(self.bottom_frame, resize_grip_angle = 270)
         self.overlay_color_entry = tk.Entry(self.bottom_frame, textvariable = self.overlay_color_string_var, width = 8, justify = tk.CENTER, bd = 0, highlightthickness = 0)
-        self.bottom_right_resize_grip = ResizeGrip(self.bottom_frame, resize_grip_color = self.overlay_color_string_var.get(), resize_grip_angle = 0)
+        self.bottom_right_resize_grip = ResizeGrip(self.bottom_frame, resize_grip_angle = 0)
 
         # PACK WIDGETS
         self.top_left_resize_grip.pack(side = tk.LEFT, fill = tk.BOTH)
@@ -137,7 +135,7 @@ class Overlay(tk.Toplevel):
         self.position_grip.bind("<B1-Motion>", self.handle_drag)
 
         self.bottom_left_resize_grip.bind("<B1-Motion>", partial(self.resize, side = Overlay.BOTTOM_LEFT))
-        self.overlay_color_string_var.trace_add("write", lambda *args, **kwargs: self.handle_color(self.overlay_color_string_var))
+        self.overlay_color_string_var.trace_add("write", lambda *args, **kwargs: self.handle_color())
         self.bottom_right_resize_grip.bind("<B1-Motion>", partial(self.resize, side = Overlay.BOTTOM_RIGHT))
 
         # CONFIGURE WIDGETS
@@ -147,8 +145,10 @@ class Overlay(tk.Toplevel):
         self.attributes('-topmost', True)
         self.update()
 
-    def handle_color(self, color_var):
-        color = color_var.get()
+        self.handle_color()
+
+    def handle_color(self):
+        color = self.overlay_color_string_var.get()
         color_valid = re.search(r'^#([0-9a-fA-F]{3}){1,2}$', color)
         if not color_valid:
             return
