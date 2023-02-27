@@ -2,7 +2,7 @@ import tkinter as tk
 import re
 from functools import partial
 
-from hide_it.utils import apply_to_widget_and_children, find_matching_color
+from hide_it.utils import apply_to_widget_and_children, find_matching_color, enable_clickthrough, disable_clickthrough
 from hide_it.libs.ResizeGrip import ResizeGrip
 
 class Overlay(tk.Toplevel):
@@ -16,7 +16,11 @@ class Overlay(tk.Toplevel):
     def change_background_color(widget, color, highlight_color):
         if type(widget) is ResizeGrip:
             widget.config(background = color)
+        if type(widget) is tk.Frame:
+            widget.config(background = color)
         if type(widget) is tk.Label:
+            widget.config(background = color)
+        if type(widget) is Overlay:
             widget.config(background = color)
         elif type(widget) is tk.Entry:
             widget.config(
@@ -137,6 +141,16 @@ class Overlay(tk.Toplevel):
         if (h < min_h): (y, h) = (y0, min_h)
         self.geometry(f"{w}x{h}+{x}+{y}")
 
+    def lock(self):
+        enable_clickthrough(self.winfo_id())
+        self.attributes("-transparentcolor", self.overlay_color)
+        self.root_frame.pack_forget()
+
+    def unlock(self):
+        disable_clickthrough(self.winfo_id())
+        self.attributes("-transparentcolor", "")
+        self.attributes("-topmost", True)
+        self.root_frame.pack(fill = tk.BOTH, expand = True)
+
     def serialize(self):
         return { "overlay_color": self.overlay_color, "overlay_geometry": self.winfo_geometry() }
-

@@ -4,3 +4,5 @@ en:
   save: 'Save'
   actions: 'Actions'
   addOverlay: 'Add overlay'
+  lockOverlays: 'Lock overlays'
+  unlockOverlays: 'Unlock overlays'

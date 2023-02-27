@@ -29,32 +29,36 @@ class App(tk.Tk):
 
         self.overlays = {}
         self.overlays_key_generator = itertools.count()
-        
+
         # CREATE WIDGETS
         self.root_frame = tk.Frame(self, padx = 5, pady = 5)
 
         self.config_frame = tk.LabelFrame(self.root_frame, text = i18n.t("translate.config"), padx = 5, pady = 5)
         self.config_file_input = FileInput(self.config_frame, file_input_handler = self.load_config, file_input_title = i18n.t("translate.load"), pady = 5)
         self.config_file_output = FileOutput(self.config_frame, file_output_handler = self.save_config, file_output_title= i18n.t("translate.save"))
-
+    
         self.overlays_controls_frame = tk.LabelFrame(self.root_frame, text = i18n.t("translate.actions"), padx = 5, pady = 5)
-        self.add_overlay_label = tk.Button(self.overlays_controls_frame, text = i18n.t("translate.addOverlay"), command = self.add_overlay)
+        self.add_overlay_button = tk.Button(self.overlays_controls_frame, text = i18n.t("translate.addOverlay"), command = self.add_overlay)
+        self.lock_overlays_button = tk.Button(self.overlays_controls_frame, text = i18n.t("translate.lockOverlays"), command = self.lock_overlays)
+        self.unlock_overlays_button = tk.Button(self.overlays_controls_frame, text = i18n.t("translate.unlockOverlays"), command = self.unlock_overlays)
 
         # PACK WIDGETS
         self.config_file_input.pack(fill = tk.X)
         self.config_file_output.pack(fill = tk.X)
         self.config_frame.pack(fill =  tk.X)
 
-        self.add_overlay_label.pack(fill = tk.X)
+        self.add_overlay_button.pack(fill = tk.X)
         self.overlays_controls_frame.pack(fill = tk.BOTH, expand = True)
         
         self.root_frame.pack(fill = tk.BOTH, expand = True)
 
         # CONFIGURE WIDGETS
-        self.geometry("300x200")
-        self.minsize(300, 200)
-        self.maxsize(300, 200)
+        self.geometry("360x200")
+        self.minsize(360, 200)
+        self.maxsize(360, 200)
         self.attributes("-topmost", True)
+
+        self.unlock_overlays()
 
     def add_overlay(self, config = {}):
         key = next(self.overlays_key_generator)
@@ -70,6 +74,16 @@ class App(tk.Tk):
     def remove_overlays(self):
         for key in list(self.overlays.keys()):
             self.remove_overlay(key)
+    
+    def lock_overlays(self):
+        self.lock_overlays_button.pack_forget()
+        self.unlock_overlays_button.pack(fill = tk.X)
+        for overlay in self.overlays.values(): overlay.lock()
+
+    def unlock_overlays(self):
+        self.unlock_overlays_button.pack_forget()
+        self.lock_overlays_button.pack(fill = tk.X)
+        for overlay in self.overlays.values(): overlay.unlock()
 
     def load_config(self, file_path):
         try:

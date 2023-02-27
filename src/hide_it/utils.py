@@ -1,5 +1,8 @@
 import os
 import json
+import win32api
+import win32gui
+import win32con
 from PIL import ImageColor
 
 def apply_to_widget_and_children(widget, fn):
@@ -22,3 +25,11 @@ def load_json(file_path):
 def save_json(file_path, payload):
     with open(file_path, 'w', encoding='utf-8') as file:
         json.dump(payload, file, ensure_ascii=False)
+
+def enable_clickthrough(hwnd):
+    ex_style = win32gui.GetWindowLong(hwnd, win32con.GWL_EXSTYLE) | win32con.WS_EX_TRANSPARENT | win32con.WS_EX_LAYERED
+    win32gui.SetWindowLong(hwnd, win32con.GWL_EXSTYLE, ex_style)
+    win32gui.SetLayeredWindowAttributes(hwnd, 0, 255, win32con.LWA_ALPHA)
+
+def disable_clickthrough(hwnd):
+    win32api.SetWindowLong(hwnd, win32con.GWL_EXSTYLE, 0)
