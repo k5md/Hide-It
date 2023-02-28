@@ -65,3 +65,17 @@ Generated archive and .whl package will be placed in **dist** directory.
 
 ## Contributions
 PR are always welcome!
+
+## Todo
+- make default size for overlay bigger
+- add labels for color and opacity
+- add grip indication
+- add file input/ouput success/fail indicators
+- add extension to config file when saved
+- separate overlay widget features from non-related stuff
+- move ^ to separate module
+- move ResizeGrip and related stuff to a Resizable subclass 
+- move ^ to a separate module
+- change app icon
+- add description to readme
+- add illustrations to readme
