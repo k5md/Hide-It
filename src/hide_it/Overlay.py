@@ -11,7 +11,7 @@ class Overlay(tk.Toplevel):
     TOP_RIGHT = 1
     BOTTOM_LEFT = 2
     BOTTOM_RIGHT = 3
-    MIN_SIZE = (80, 32)
+    MIN_SIZE = (28, 14)
 
     @staticmethod
     def change_background_color(widget, color, highlight_color):
@@ -111,13 +111,15 @@ class Overlay(tk.Toplevel):
 
         # CONFIGURE WIDGETS
         self.overrideredirect(True)
-        self.minsize(*Overlay.MIN_SIZE)
-        self.geometry(overlay_geometry)
         self.attributes("-topmost", True)
-        self.update()
-
+        
+        (wh, x, y) = overlay_geometry.split("+")
+        (w, h) = wh.split("x")
+        if (int(w) > 0 and int(h) > 0):
+            self.geometry(overlay_geometry)
         self.handle_color()
         self.handle_opacity()
+        self.update()
 
     def handle_color(self):
         color = self.overlay_color_string_var.get()

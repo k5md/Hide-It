@@ -67,7 +67,6 @@ Generated archive and .whl package will be placed in **dist** directory.
 PR are always welcome!
 
 ## Todo
-- make default size for overlay bigger
 - add file input/ouput success/fail indicators
 - add extension to config file when saved
 - separate overlay widget features from non-related stuff
