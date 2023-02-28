@@ -68,7 +68,6 @@ PR are always welcome!
 
 ## Todo
 - make default size for overlay bigger
-- add labels for color and opacity
 - add grip indication
 - add file input/ouput success/fail indicators
 - add extension to config file when saved

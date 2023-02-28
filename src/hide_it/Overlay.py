@@ -1,6 +1,7 @@
 import tkinter as tk
 import re
 from functools import partial
+import i18n
 
 from hide_it.utils import apply_to_widget_and_children, find_matching_color, enable_clickthrough, disable_clickthrough
 from hide_it.libs.ResizeGrip import ResizeGrip
@@ -66,8 +67,12 @@ class Overlay(tk.Toplevel):
 
         self.bottom_frame = tk.Frame(self.root_frame)
         self.bottom_left_resize_grip = ResizeGrip(self.bottom_frame, resize_grip_angle = 270)
-        self.overlay_color_entry = tk.Entry(self.bottom_frame, textvariable = self.overlay_color_string_var, width = 8, justify = tk.CENTER, bd = 0, highlightthickness = 0)
-        self.overlay_opacity_entry = tk.Entry(self.bottom_frame, textvariable = self.overlay_opacity_string_var, width = 8, justify = tk.CENTER, bd = 0, highlightthickness = 0)
+        self.overlay_color_frame = tk.Frame(self.bottom_frame)
+        self.overlay_color_label = tk.Label(self.overlay_color_frame, text = i18n.t("translate.color"))
+        self.overlay_color_entry = tk.Entry(self.overlay_color_frame, textvariable = self.overlay_color_string_var, width = 8, justify = tk.CENTER, bd = 0, highlightthickness = 0)
+        self.overlay_opacity_frame = tk.Frame(self.bottom_frame)
+        self.overlay_opacity_label = tk.Label(self.overlay_opacity_frame, text = i18n.t("translate.opacity"))
+        self.overlay_opacity_entry = tk.Entry(self.overlay_opacity_frame, textvariable = self.overlay_opacity_string_var, width = 8, justify = tk.CENTER, bd = 0, highlightthickness = 0)
         self.bottom_right_resize_grip = ResizeGrip(self.bottom_frame, resize_grip_angle = 0)
 
         # PACK WIDGETS
@@ -80,9 +85,13 @@ class Overlay(tk.Toplevel):
         self.center_frame.pack(side = tk.TOP, fill = tk.BOTH, expand = True)
 
         self.bottom_left_resize_grip.pack(side = tk.LEFT, fill = tk.BOTH)
-        self.overlay_color_entry.pack(side = tk.LEFT, fill = tk.BOTH, expand = True)
-        self.overlay_opacity_entry.pack(side = tk.LEFT, fill = tk.BOTH, expand = True)
+        self.overlay_color_frame.pack(side = tk.LEFT, fill = tk.BOTH, expand = True)
+        self.overlay_color_entry.pack(side = tk.RIGHT, fill = tk.BOTH)
+        self.overlay_color_label.pack(side = tk.RIGHT, fill = tk.BOTH)
         self.bottom_right_resize_grip.pack(side = tk.RIGHT, fill = tk.BOTH)
+        self.overlay_opacity_frame.pack(side = tk.RIGHT, fill = tk.BOTH, expand = True)
+        self.overlay_opacity_label.pack(side = tk.LEFT, fill = tk.BOTH)
+        self.overlay_opacity_entry.pack(side = tk.LEFT, fill = tk.BOTH)
         self.bottom_frame.pack(side = tk.BOTTOM, fill = tk.BOTH)
         
         self.root_frame.pack(fill = tk.BOTH, expand = True)

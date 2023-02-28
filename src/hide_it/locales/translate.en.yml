@@ -6,3 +6,5 @@ en:
   addOverlay: 'Add overlay'
   lockOverlays: 'Lock overlays'
   unlockOverlays: 'Unlock overlays'
+  color: 'Color'
+  opacity: 'Opacity'
