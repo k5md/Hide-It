@@ -34,9 +34,20 @@ class App(tk.Tk):
         self.root_frame = tk.Frame(self, padx = 5, pady = 5)
 
         self.config_frame = tk.LabelFrame(self.root_frame, text = i18n.t("translate.config"), padx = 5, pady = 5)
-        self.config_file_input = FileInput(self.config_frame, file_input_handler = self.load_config, file_input_title = i18n.t("translate.load"), pady = 5)
-        self.config_file_output = FileOutput(self.config_frame, file_output_handler = self.save_config, file_output_title= i18n.t("translate.save"))
-    
+        self.config_file_input = FileInput(
+            self.config_frame,
+            file_input_handler = self.load_config,
+            file_input_title = i18n.t("translate.load"),
+            file_input_dialog_props = { "filetypes": [("JSON",".json"), (i18n.t("translate.allTypes"), "*.*")] },
+            pady = 5,
+        )
+        self.config_file_output = FileOutput(
+            self.config_frame,
+            file_output_handler = self.save_config,
+            file_output_title = i18n.t("translate.save"),
+            file_output_dialog_props = { "filetypes": [("JSON",".json")], "defaultextension": ".json" },
+        )
+
         self.overlays_controls_frame = tk.LabelFrame(self.root_frame, text = i18n.t("translate.actions"), padx = 5, pady = 5)
         self.add_overlay_button = tk.Button(self.overlays_controls_frame, text = i18n.t("translate.addOverlay"), command = self.add_overlay)
         self.lock_overlays_button = tk.Button(self.overlays_controls_frame, text = i18n.t("translate.lockOverlays"), command = self.lock_overlays)
@@ -84,7 +95,7 @@ class App(tk.Tk):
         self.unlock_overlays_button.pack_forget()
         self.lock_overlays_button.pack(fill = tk.X)
         for overlay in self.overlays.values(): overlay.unlock()
-
+    
     def load_config(self, file_path):
         if not file_path:
             return
@@ -104,7 +115,7 @@ class App(tk.Tk):
                 "overlays": [ overlay.serialize() for overlay in self.overlays.values() ],
             }
             save_json(file_path, payload)
-            return False
+            return file_path
         except Exception as exception:
             return str(exception)
 

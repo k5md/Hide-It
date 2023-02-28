@@ -67,7 +67,6 @@ Generated archive and .whl package will be placed in **dist** directory.
 PR are always welcome!
 
 ## Todo
-- add extension to config file when saved
 - separate overlay widget features from non-related stuff
 - move ^ to separate module
 - move ResizeGrip and related stuff to a Resizable subclass 
