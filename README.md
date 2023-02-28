@@ -71,6 +71,5 @@ PR are always welcome!
 - move ^ to separate module
 - move ResizeGrip and related stuff to a Resizable subclass 
 - move ^ to a separate module
-- change app icon
 - add description to readme
 - add illustrations to readme
