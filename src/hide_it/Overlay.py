@@ -63,15 +63,15 @@ class Overlay(tk.Toplevel):
         self.top_right_resize_grip = ResizeGrip(self.top_frame, resize_grip_angle = 90)
 
         self.center_frame = tk.Frame(self.root_frame)
-        self.position_grip = tk.Label(self.center_frame)
+        self.position_grip = tk.Label(self.center_frame, text = i18n.t("translate.dragOverlay"))
 
         self.bottom_frame = tk.Frame(self.root_frame)
         self.bottom_left_resize_grip = ResizeGrip(self.bottom_frame, resize_grip_angle = 270)
         self.overlay_color_frame = tk.Frame(self.bottom_frame)
-        self.overlay_color_label = tk.Label(self.overlay_color_frame, text = i18n.t("translate.color"))
+        self.overlay_color_label = tk.Label(self.overlay_color_frame, text = "{}:".format(i18n.t("translate.color")))
         self.overlay_color_entry = tk.Entry(self.overlay_color_frame, textvariable = self.overlay_color_string_var, width = 8, justify = tk.CENTER, bd = 0, highlightthickness = 0)
         self.overlay_opacity_frame = tk.Frame(self.bottom_frame)
-        self.overlay_opacity_label = tk.Label(self.overlay_opacity_frame, text = i18n.t("translate.opacity"))
+        self.overlay_opacity_label = tk.Label(self.overlay_opacity_frame, text = "{}:".format(i18n.t("translate.opacity")))
         self.overlay_opacity_entry = tk.Entry(self.overlay_opacity_frame, textvariable = self.overlay_opacity_string_var, width = 8, justify = tk.CENTER, bd = 0, highlightthickness = 0)
         self.bottom_right_resize_grip = ResizeGrip(self.bottom_frame, resize_grip_angle = 0)
 

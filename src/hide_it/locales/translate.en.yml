@@ -8,3 +8,4 @@ en:
   unlockOverlays: 'Unlock overlays'
   color: 'Color'
   opacity: 'Opacity'
+  dragOverlay: 'Drag overlay'
