@@ -86,6 +86,8 @@ class App(tk.Tk):
         for overlay in self.overlays.values(): overlay.unlock()
 
     def load_config(self, file_path):
+        if not file_path:
+            return
         try:
             payload = load_json(file_path)
             self.remove_overlays()
@@ -95,6 +97,8 @@ class App(tk.Tk):
             return str(exception)
         
     def save_config(self, file_path):
+        if not file_path:
+            return
         try:
             payload = {
                 "overlays": [ overlay.serialize() for overlay in self.overlays.values() ],
