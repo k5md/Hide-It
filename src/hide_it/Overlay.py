@@ -10,7 +10,7 @@ class Overlay(tk.Toplevel):
     TOP_RIGHT = 1
     BOTTOM_LEFT = 2
     BOTTOM_RIGHT = 3
-    MIN_SIZE = (80, 64)
+    MIN_SIZE = (80, 32)
 
     @staticmethod
     def change_background_color(widget, color, highlight_color):
@@ -44,11 +44,14 @@ class Overlay(tk.Toplevel):
                 selectforeground = color,
             )
 
-    def __init__(self, *args, overlay_color = "#000", overlay_geometry = "0x0+0+0", overlay_close_handler = lambda event: None, **kwargs):
+    def __init__(self, *args, overlay_color = "#000", overlay_geometry = "0x0+0+0", overlay_opacity = "1", overlay_close_handler = lambda event: None, **kwargs):
         tk.Toplevel.__init__(self, *args, **kwargs)
 
         self.overlay_color = overlay_color
         self.overlay_color_string_var = tk.StringVar(value = self.overlay_color)
+
+        self.overlay_opacity = overlay_opacity
+        self.overlay_opacity_string_var = tk.StringVar(value = self.overlay_opacity)
 
         # CREATE WIDGETS
         self.root_frame = tk.Frame(self)
@@ -64,6 +67,7 @@ class Overlay(tk.Toplevel):
         self.bottom_frame = tk.Frame(self.root_frame)
         self.bottom_left_resize_grip = ResizeGrip(self.bottom_frame, resize_grip_angle = 270)
         self.overlay_color_entry = tk.Entry(self.bottom_frame, textvariable = self.overlay_color_string_var, width = 8, justify = tk.CENTER, bd = 0, highlightthickness = 0)
+        self.overlay_opacity_entry = tk.Entry(self.bottom_frame, textvariable = self.overlay_opacity_string_var, width = 8, justify = tk.CENTER, bd = 0, highlightthickness = 0)
         self.bottom_right_resize_grip = ResizeGrip(self.bottom_frame, resize_grip_angle = 0)
 
         # PACK WIDGETS
@@ -77,6 +81,7 @@ class Overlay(tk.Toplevel):
 
         self.bottom_left_resize_grip.pack(side = tk.LEFT, fill = tk.BOTH)
         self.overlay_color_entry.pack(side = tk.LEFT, fill = tk.BOTH, expand = True)
+        self.overlay_opacity_entry.pack(side = tk.LEFT, fill = tk.BOTH, expand = True)
         self.bottom_right_resize_grip.pack(side = tk.RIGHT, fill = tk.BOTH)
         self.bottom_frame.pack(side = tk.BOTTOM, fill = tk.BOTH)
         
@@ -92,6 +97,7 @@ class Overlay(tk.Toplevel):
 
         self.bottom_left_resize_grip.bind("<B1-Motion>", partial(self.resize, side = Overlay.BOTTOM_LEFT))
         self.overlay_color_string_var.trace_add("write", lambda *args, **kwargs: self.handle_color())
+        self.overlay_opacity_string_var.trace_add("write", lambda *args, **kwargs: self.handle_opacity())
         self.bottom_right_resize_grip.bind("<B1-Motion>", partial(self.resize, side = Overlay.BOTTOM_RIGHT))
 
         # CONFIGURE WIDGETS
@@ -102,6 +108,7 @@ class Overlay(tk.Toplevel):
         self.update()
 
         self.handle_color()
+        self.handle_opacity()
 
     def handle_color(self):
         color = self.overlay_color_string_var.get()
@@ -113,6 +120,14 @@ class Overlay(tk.Toplevel):
         matching_color = find_matching_color(self.overlay_color)
         apply_to_widget_and_children(self, partial(Overlay.change_foreground_color, color = matching_color))
         self.update()
+    
+    def handle_opacity(self):
+        opacity = self.overlay_opacity_string_var.get()
+        opacity_valid = re.search(r'^\d(\.\d{0,2})?$', opacity)
+        if not opacity_valid:
+            return
+        self.overlay_opacity = opacity
+        self.attributes("-alpha", float(opacity))
 
     def handle_press(self, event):
         self.press_x = event.x
@@ -153,4 +168,4 @@ class Overlay(tk.Toplevel):
         self.root_frame.pack(fill = tk.BOTH, expand = True)
 
     def serialize(self):
-        return { "overlay_color": self.overlay_color, "overlay_geometry": self.winfo_geometry() }
+        return { "overlay_color": self.overlay_color, "overlay_opacity": self.overlay_opacity, "overlay_geometry": self.winfo_geometry() }
