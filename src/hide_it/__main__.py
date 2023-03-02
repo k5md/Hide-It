@@ -47,7 +47,6 @@ class App(tk.Tk):
         self.geometry("{}x{}".format(*App.WIN_SIZE))
         self.minsize(*App.WIN_SIZE)
         self.maxsize(*App.WIN_SIZE)
-        self.attributes("-topmost", True)
 
 app = App()
 app.mainloop()
