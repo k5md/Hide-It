@@ -17,6 +17,8 @@ except NameError:  # We are the main py2exe script, not a module
 LOCALES_PATH = os.path.join(approot, "locales")
 
 class App(tk.Tk):
+    WIN_SIZE = (360, 240)
+
     def __init__(self):
         super().__init__()
 
@@ -40,9 +42,9 @@ class App(tk.Tk):
         self.config_manager_frame.add_config(("overlays", self.overlays_manager_frame))
 
         self.title(i18n.t("translate.appTitle"))
-        self.geometry("360x240")
-        self.minsize(360, 240)
-        self.maxsize(360, 240)
+        self.geometry("{}x{}".format(*App.WIN_SIZE))
+        self.minsize(*App.WIN_SIZE)
+        self.maxsize(*App.WIN_SIZE)
         self.attributes("-topmost", True)
 
 app = App()

@@ -13,6 +13,7 @@ class OverlayWindow(tk.Toplevel):
     def lock(self):
         enable_clickthrough(self.winfo_id())
         self.attributes("-transparentcolor", self.overlay_color)
+        self.attributes("-topmost", True)
 
     def unlock(self):
         disable_clickthrough(self.winfo_id())
