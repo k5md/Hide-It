@@ -40,9 +40,9 @@ class App(tk.Tk):
         self.config_manager_frame.add_config(("overlays", self.overlays_manager_frame))
 
         self.title(i18n.t("translate.appTitle"))
-        self.geometry("360x200")
-        self.minsize(360, 200)
-        self.maxsize(360, 200)
+        self.geometry("360x240")
+        self.minsize(360, 240)
+        self.maxsize(360, 240)
         self.attributes("-topmost", True)
 
 app = App()
