@@ -15,6 +15,7 @@ except NameError:  # We are the main py2exe script, not a module
     approot = os.path.dirname(sys.executable)
 
 LOCALES_PATH = os.path.join(approot, "locales")
+ICON_PATH = os.path.join(approot, "assets", "hide_it.ico")
 
 class App(tk.Tk):
     WIN_SIZE = (360, 240)
@@ -42,6 +43,7 @@ class App(tk.Tk):
         self.config_manager_frame.add_config(("overlays", self.overlays_manager_frame))
 
         self.title(i18n.t("translate.appTitle"))
+        self.iconbitmap(ICON_PATH)
         self.geometry("{}x{}".format(*App.WIN_SIZE))
         self.minsize(*App.WIN_SIZE)
         self.maxsize(*App.WIN_SIZE)
