@@ -28,10 +28,11 @@ def save_json(file_path, payload):
     with open(file_path, 'w', encoding='utf-8') as file:
         json.dump(payload, file, ensure_ascii=False)
 
-def enable_clickthrough(hwnd):
+def enable_clickthrough(hwnd, color_key = 0, alpha = 255):
+    # NOTE: to get color_key, use win32api.RGB
     ex_style = win32gui.GetWindowLong(hwnd, win32con.GWL_EXSTYLE) | win32con.WS_EX_TRANSPARENT | win32con.WS_EX_LAYERED
     win32gui.SetWindowLong(hwnd, win32con.GWL_EXSTYLE, ex_style)
-    win32gui.SetLayeredWindowAttributes(hwnd, 0, 255, win32con.LWA_ALPHA)
+    win32gui.SetLayeredWindowAttributes(hwnd, color_key, alpha, win32con.LWA_ALPHA)
 
 def disable_clickthrough(hwnd):
     win32api.SetWindowLong(hwnd, win32con.GWL_EXSTYLE, 0)
@@ -41,6 +42,7 @@ def make_draggable(widget: tk.Widget, grip: tk.Widget):
     press_y = None
 
     def handle_press(event):
+        nonlocal press_x, press_y
         press_x = event.x
         press_y = event.y
 

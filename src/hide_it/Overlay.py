@@ -3,16 +3,11 @@ import re
 from functools import partial
 import i18n
 
-from hide_it.utils import apply_to_widget_and_children, find_matching_color, enable_clickthrough, disable_clickthrough
+from hide_it.utils import apply_to_widget_and_children, find_matching_color, make_draggable, make_resizable
 from hide_it.libs.ResizeGrip import ResizeGrip
+from hide_it.libs.OverlayWindow import OverlayWindow
 
-class Overlay(tk.Toplevel):
-    TOP_LEFT = 0
-    TOP_RIGHT = 1
-    BOTTOM_LEFT = 2
-    BOTTOM_RIGHT = 3
-    MIN_SIZE = (28, 14)
-
+class Overlay(OverlayWindow):
     @staticmethod
     def change_background_color(widget, color, highlight_color):
         if type(widget) is ResizeGrip:
@@ -46,7 +41,7 @@ class Overlay(tk.Toplevel):
             )
 
     def __init__(self, *args, overlay_color = "#000", overlay_geometry = "0x0+0+0", overlay_opacity = "1", overlay_close_handler = lambda event: None, **kwargs):
-        tk.Toplevel.__init__(self, *args, **kwargs)
+        super().__init__(*args, **kwargs)
 
         self.overlay_color = overlay_color
         self.overlay_color_string_var = tk.StringVar(value = self.overlay_color)
@@ -97,22 +92,18 @@ class Overlay(tk.Toplevel):
         self.root_frame.pack(fill = tk.BOTH, expand = True)
 
         # REGISTER LISTENERS
-        self.top_left_resize_grip.bind("<B1-Motion>", partial(self.resize, side = Overlay.TOP_LEFT))
+        make_resizable(self, self.top_left_resize_grip, tk.NW)
         self.close_label.bind("<Button-1>", overlay_close_handler)
-        self.top_right_resize_grip.bind("<B1-Motion>", partial(self.resize, side = Overlay.TOP_RIGHT))
+        make_resizable(self, self.top_right_resize_grip, tk.NE)
 
-        self.position_grip.bind("<Button-1>", self.handle_press)
-        self.position_grip.bind("<B1-Motion>", self.handle_drag)
+        make_draggable(self, self.position_grip)
 
-        self.bottom_left_resize_grip.bind("<B1-Motion>", partial(self.resize, side = Overlay.BOTTOM_LEFT))
+        make_resizable(self, self.bottom_left_resize_grip, tk.SW)
         self.overlay_color_string_var.trace_add("write", lambda *args, **kwargs: self.handle_color())
         self.overlay_opacity_string_var.trace_add("write", lambda *args, **kwargs: self.handle_opacity())
-        self.bottom_right_resize_grip.bind("<B1-Motion>", partial(self.resize, side = Overlay.BOTTOM_RIGHT))
+        make_resizable(self, self.bottom_right_resize_grip, tk.SE)
 
-        # CONFIGURE WIDGETS
-        self.overrideredirect(True)
-        self.attributes("-topmost", True)
-        
+        # CONFIGURE WIDGETS       
         (wh, x, y) = overlay_geometry.split("+")
         (w, h) = wh.split("x")
         if (int(w) > 0 and int(h) > 0):
@@ -140,42 +131,12 @@ class Overlay(tk.Toplevel):
         self.overlay_opacity = opacity
         self.attributes("-alpha", float(opacity))
 
-    def handle_press(self, event):
-        self.press_x = event.x
-        self.press_y = event.y
-
-    def handle_drag(self, event):
-        dx = event.x - self.press_x
-        dy = event.y - self.press_y
-        x = self.winfo_x() + dx
-        y = self.winfo_y() + dy
-        self.geometry(f"+{x}+{y}")
-
-    def resize(self, event, side):
-        min_w = self.minsize()[0]
-        min_h = self.minsize()[1]
-        (x0, y0, x1, y1) = (self.winfo_rootx(), self.winfo_rooty(), self.winfo_pointerx(), self.winfo_pointery())
-        # offsets from mouse to window
-        dx = x1 - x0 
-        dy = y1 - y0
-        if side == Overlay.BOTTOM_RIGHT: (x, y, w, h) = (x0, y0, dx, dy)
-        if side == Overlay.TOP_LEFT: (x, y, w, h) = (x1, y1, self.winfo_width() - dx, self.winfo_height() - dy)
-        if side == Overlay.TOP_RIGHT: (x, y, w, h) = (x1 - dx, y1, dx, self.winfo_height() - dy)
-        if side == Overlay.BOTTOM_LEFT: (x, y, w, h) = (x1, y1 - dy, -dx + self.winfo_width(), dy)
-        # prevent window from moving
-        if (w < min_w): (x, w) = (x0, min_w)
-        if (h < min_h): (y, h) = (y0, min_h)
-        self.geometry(f"{w}x{h}+{x}+{y}")
-
     def lock(self):
-        enable_clickthrough(self.winfo_id())
-        self.attributes("-transparentcolor", self.overlay_color)
+        super().lock()
         self.root_frame.pack_forget()
 
     def unlock(self):
-        disable_clickthrough(self.winfo_id())
-        self.attributes("-transparentcolor", "")
-        self.attributes("-topmost", True)
+        super().unlock()
         self.root_frame.pack(fill = tk.BOTH, expand = True)
 
     def serialize(self):

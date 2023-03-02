@@ -67,9 +67,5 @@ Generated archive and .whl package will be placed in **dist** directory.
 PR are always welcome!
 
 ## Todo
-- separate overlay widget features from non-related stuff
-- move ^ to separate module
-- move ResizeGrip and related stuff to a Resizable subclass 
-- move ^ to a separate module
 - add description to readme
 - add illustrations to readme
