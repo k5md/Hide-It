@@ -64,6 +64,7 @@ class App(tk.Tk):
         self.root_frame.pack(fill = tk.BOTH, expand = True)
 
         # CONFIGURE WIDGETS
+        self.title(i18n.t("translate.appTitle"))
         self.geometry("360x200")
         self.minsize(360, 200)
         self.maxsize(360, 200)
@@ -74,6 +75,7 @@ class App(tk.Tk):
     def add_overlay(self, config = {}):
         key = next(self.overlays_key_generator)
         overlay = Overlay(self, **config, overlay_close_handler = lambda event: self.remove_overlay(key))
+        overlay.title(i18n.t("translate.overlayTitle", id = key))
         self.overlays[key] = overlay
     
     def remove_overlay(self, key):

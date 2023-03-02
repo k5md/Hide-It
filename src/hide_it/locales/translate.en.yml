@@ -10,3 +10,6 @@ en:
   opacity: 'Opacity'
   dragOverlay: 'Drag overlay'
   allTypes: 'All types'
+  appTitle: 'Hide it'
+  overlayTitle: 'HIOverlay #%{id}'
+  
