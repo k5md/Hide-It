@@ -10,7 +10,7 @@ __all__ = [
 ]
 
 __title__ = "hide_it"
-__version__ = "1.0.0"
+__version__ = "1.0.1"
 __author__ = "k5md"
 __email__ = "k-5md@yandex.ru"
 __summary__ = "Create a rectangle to hide everything under it"
